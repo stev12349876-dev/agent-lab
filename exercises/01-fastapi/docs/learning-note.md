@@ -156,3 +156,47 @@ FastAPI 返回 JSON
 ```
 
 Day 1 的 FastAPI 就是这个管道的**入口和出口**。
+
+---
+
+## 补充：GET 和 POST 的区别
+
+以 Day 1 代码中的两个接口为例：
+
+### GET —— 从服务端拿数据（读）
+
+```python
+@app.get("/agents/{agent_id}")
+async def get_agent(agent_id: int, verbose: bool = False):
+    agents = {1: "planner", 2: "executor", 3: "evaluator"}
+    return {"id": agent_id, "name": agents.get(agent_id)}
+```
+
+- 参数在 **URL 里**：`/agents/1`（路径参数）、`?verbose=true`（查询参数）
+- 浏览器**可以直接访问**，地址栏输入 `http://127.0.0.1:8000/agents/1` 就行
+- 语义是 **"给我看看"**，不应该有副作用（不修改数据）
+
+### POST —— 往服务端送数据（写）
+
+```python
+@app.post("/query")
+async def handle_query(req: QueryRequest):
+    return QueryResponse(answer=..., tokens_used=..., elapsed_ms=...)
+```
+
+- 参数在 **请求体里**，通常是 JSON：`{"question": "什么是 Agent？"}`
+- 浏览器**不能直接输入**，需要写代码或用 Swagger 页面 `/docs` 点 "Try it out"
+- 语义是 **"帮我干活"**，可以有副作用（调用 LLM、写数据库等）
+
+### 一句话总结
+
+| | GET | POST |
+|---|-----|------|
+| 语义 | 给我看看 | 帮我干活 |
+| 参数位置 | URL 里 | 请求体 JSON |
+| 浏览器能直接访问 | ✅ | ❌ |
+| 能传大数据 | ❌ URL 有长度限制 | ✅ 无限制 |
+| 应该被缓存吗 | 可以 | 不应该 |
+| Agent 场景 | 查状态、查健康 | 提交任务、执行查询 |
+
+**Agent 开发中**：查询类接口（如查看 Agent 列表、健康检查）用 GET，任务执行类接口（提交问题让 Agent 处理）用 POST。
