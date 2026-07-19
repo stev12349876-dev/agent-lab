@@ -133,11 +133,20 @@ class ConceptExplain(BaseModel):
 json_parser = JsonOutputParser(pydantic_object=ConceptExplain)
 
 json_prompt = ChatPromptTemplate.from_messages([
-    ("system", "你是一个知识解释器。按 JSON 格式输出。\n{format_instructions}"),
+    ("system", "你是一个知识解释器。按 JSON 格式输出。"),
     ("human", "解释：{concept}"),
 ])
 
-chain_json = json_prompt | llm | json_parser
+# 方法1：partial 手动注入 format_instructions（兼容老版本）
+# json_prompt_with_format = json_prompt.partial(
+#     format_instructions=json_parser.get_format_instructions()
+# )
+# chain_json = json_prompt_with_format | llm | json_parser
+
+# 方法2（推荐）：直接用 LLM 的 with_structured_output
+# 这是 LangChain 0.3+ 的推荐方式，不需要手写 format_instructions
+structured_llm = llm.with_structured_output(ConceptExplain)
+chain_json = json_prompt | structured_llm
 
 
 # ============================================================
