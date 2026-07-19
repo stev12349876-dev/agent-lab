@@ -151,7 +151,33 @@ AgentExecutor（循环：调工具 → 看结果 → 决定下一步）
 
 Day 2 的 `prompt | llm | parser` 就是 Agent 的一次"思考"步骤。Agent 只是在这个基础上加了循环和工具调用。
 
-## 六、和 Day 1 FastAPI 的关系
+## 六、六大模块补充（extras.py）
+
+Day 2 的 `main.py` + `practice.py` 覆盖了前三模块。`extras.py` 快速演示后三模块：
+
+### Memory
+```python
+chain_with_memory = RunnableWithMessageHistory(chain, get_history, ...)
+```
+历史消息自动拼到 prompt 前面，LLM 能"看到"之前的对话。Week 3 会改用 LangGraph 的持久化。
+
+### Callbacks
+```python
+class MyCallback(BaseCallbackHandler):
+    def on_llm_start(self, ...): ...  # LLM 开始时触发
+    def on_llm_end(self, ...): ...    # LLM 结束时触发（拿 token 用量）
+```
+每次 LLM 调用都触发钩子，是 Agent 可观测性的基础。Week 5 深入。
+
+### Agent
+```python
+llm.bind_tools([{...}])  # 把工具定义绑到 LLM
+response = await llm.ainvoke("15×32=?")
+response.tool_calls  # LLM 自动决定调 calculator("15*32")
+```
+Chain 是固定路径，Agent 是 LLM 自己选工具。Week 3 完整实现 ReAct 循环。
+
+## 七、和 Day 1 FastAPI 的关系
 
 ```
 Day 1: FastAPI  →  "怎么接收请求、返回响应"

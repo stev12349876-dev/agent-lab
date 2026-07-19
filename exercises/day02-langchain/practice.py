@@ -66,13 +66,13 @@ from pydantic import BaseModel, Field
 
 # 定义结构化输出
 class TranslationResult(BaseModel):
-    original: str = Field(description="用户输入的原始中文")
+    original: str = Field(description="中文")
     translated: str = Field(description="翻译后的英文")
 
 
 # Prompt 明确翻译任务
 chat_prompt = ChatPromptTemplate.from_messages([
-    ("system", "你是中英翻译专家。把中文翻译成地道英文。"),
+    ("system", "你是中英翻译专家"),
     ("human", "{text}"),
 ])
 
@@ -88,7 +88,7 @@ async def main():
 
     # 单句
     result = await chain.ainvoke({"text": "人工智能正在改变我们与技术互动的方式。"})
-    print(f"  [单句] {result.original} → {result.translated}")
+    print(f"  [单句] {result}")
 
     # 并行 3 句
     results = await chain.abatch([
@@ -105,6 +105,15 @@ async def main():
 # ============================================================
 # 自检脚本（运行 python3 practice.py 查看结果）
 # ============================================================
+    # ====== 流式输出（逐 token 打印，Agent 必备） ======
+    print("\n" + "=" * 50)
+    print("流式输出（逐 token）：")
+    chain_text = chat_prompt | llm | StrOutputParser()
+    async for chunk in chain_text.astream({"text": "AI Agent 正在改变软件开发的范式。"}):
+        print(chunk, end="", flush=True)
+    print()  # 换行
+
+
 if __name__ == "__main__":
     try:
         asyncio.run(main())
