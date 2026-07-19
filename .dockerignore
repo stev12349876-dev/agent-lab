@@ -1,0 +1,7 @@
+.git
+.env
+.DS_Store
+**/__pycache__
+**/*.pyc
+**/.venv
+exercises/day06-rag-api/data

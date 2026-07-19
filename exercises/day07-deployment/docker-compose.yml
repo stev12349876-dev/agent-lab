@@ -1,0 +1,25 @@
+services:
+  rag-api:
+    build:
+      context: ../..
+      dockerfile: exercises/day07-deployment/Dockerfile
+    env_file:
+      - ../../.env
+    ports:
+      - "8001:8000"
+    volumes:
+      - rag-index:/app/exercises/day06-rag-api/data
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health').read()"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+volumes:
+  rag-index:
