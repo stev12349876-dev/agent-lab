@@ -62,32 +62,42 @@ llm = ChatOpenAI(
 # ============================================================
 # TODO: 在下面写你的代码
 # ============================================================
-# Prompt 必须明确告诉 LLM 要做什么
+from pydantic import BaseModel, Field
+
+# 定义结构化输出
+class TranslationResult(BaseModel):
+    original: str = Field(description="用户输入的原始中文")
+    translated: str = Field(description="翻译后的英文")
+
+
+# Prompt 明确翻译任务
 chat_prompt = ChatPromptTemplate.from_messages([
-    ("system", "你是一个中英翻译专家。把用户输入的中文翻译成英文。"),
+    ("system", "你是中英翻译专家。把中文翻译成地道英文。"),
     ("human", "{text}"),
 ])
 
-# 用简单的文本链（不用结构化输出）
-chain = chat_prompt | llm | StrOutputParser()
+# 结构化输出链
+structured_llm = llm.with_structured_output(TranslationResult)
+chain = chat_prompt | structured_llm
 
 
 async def main():
     print("=" * 50)
-    print("Day 2: 翻译练习")
+    print("Day 2: 结构化翻译练习")
     print("=" * 50)
 
-    # 单句翻译
+    # 单句
     result = await chain.ainvoke({"text": "人工智能正在改变我们与技术互动的方式。"})
-    print(f"  [单句] {result}")
+    print(f"  [单句] {result.original} → {result.translated}")
 
-    # 并行翻译 3 句
+    # 并行 3 句
     results = await chain.abatch([
         {"text": "你好，世界。"},
         {"text": "机器学习是人工智能的一个分支。"},
         {"text": "Python 是最流行的编程语言之一。"},
     ])
-    print(f"  [并行] {results}")
+    for r in results:
+        print(f"  [并行] {r.original} → {r.translated}")
 
 ### 你的代码写在上面 ###
 
