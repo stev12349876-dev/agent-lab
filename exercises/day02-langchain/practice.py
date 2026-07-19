@@ -62,11 +62,32 @@ llm = ChatOpenAI(
 # ============================================================
 # TODO: 在下面写你的代码
 # ============================================================
+# Prompt 必须明确告诉 LLM 要做什么
+chat_prompt = ChatPromptTemplate.from_messages([
+    ("system", "你是一个中英翻译专家。把用户输入的中文翻译成英文。"),
+    ("human", "{text}"),
+])
 
-# 第 1 步：定义 ChatPromptTemplate（system + human）
-# 第 2 步：用 | 串联 prompt | llm | StrOutputParser()
-# 第 3 步：写 async def main() 用 ainvoke + abatch 测试
+# 用简单的文本链（不用结构化输出）
+chain = chat_prompt | llm | StrOutputParser()
 
+
+async def main():
+    print("=" * 50)
+    print("Day 2: 翻译练习")
+    print("=" * 50)
+
+    # 单句翻译
+    result = await chain.ainvoke({"text": "人工智能正在改变我们与技术互动的方式。"})
+    print(f"  [单句] {result}")
+
+    # 并行翻译 3 句
+    results = await chain.abatch([
+        {"text": "你好，世界。"},
+        {"text": "机器学习是人工智能的一个分支。"},
+        {"text": "Python 是最流行的编程语言之一。"},
+    ])
+    print(f"  [并行] {results}")
 
 ### 你的代码写在上面 ###
 
