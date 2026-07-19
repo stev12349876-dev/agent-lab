@@ -130,6 +130,19 @@ FastAPI 根据你的代码自动生成 OpenAPI 规范的文档：
 
 你写的 Pydantic 模型会自动变成文档里的 Schema 说明。
 
+### 补充：文件上传（RAG 必备）
+
+```python
+from fastapi import UploadFile
+
+@app.post("/upload")
+async def upload_file(file: UploadFile):
+    content = await file.read()
+    return {"filename": file.filename, "size": len(content)}
+```
+
+`UploadFile` 自动处理 multipart/form-data，`await file.read()` 异步读文件内容。RAG 系统的入口就是用户上传文档，这个方法是必备的。
+
 ## 四、和后续学习的关系
 
 ```

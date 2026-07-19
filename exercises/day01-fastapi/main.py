@@ -129,3 +129,38 @@ async def run_agent(req: QueryRequest):
 # 然后访问：
 #   http://127.0.0.1:8000/docs   ← FastAPI 自动生成的交互式 API 文档
 # ============================================================
+
+
+# ============================================================
+# 6. 文件上传 —— RAG 系统的入口
+# ============================================================
+
+from fastapi import UploadFile
+from typing import List
+
+@app.post("/upload")
+async def upload_file(file: UploadFile):
+    """
+    接收文件上传，返回文件信息
+    UploadFile 是 FastAPI 内置类型，自动处理 multipart/form-data
+    """
+    content = await file.read()
+    return {
+        "filename": file.filename,
+        "content_type": file.content_type,
+        "size_bytes": len(content),
+        "preview": content[:200].decode("utf-8", errors="ignore"),
+    }
+
+# 批量上传
+@app.post("/upload/multiple")
+async def upload_multiple(files: List[UploadFile]):
+    """一次上传多个文件"""
+    result = []
+    for f in files:
+        content = await f.read()
+        result.append({
+            "filename": f.filename,
+            "size": len(content),
+        })
+    return {"files": result, "count": len(result)}
