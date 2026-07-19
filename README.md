@@ -10,10 +10,14 @@
 agent-lab/
 ├── docs/                     ← 学习笔记（统一管理）
 │   ├── 01-fastapi.md
-│   └── 02-langchain.md
+│   ├── 02-langchain.md
+│   ├── 03-rag-loading.md
+│   └── 04-rag-vectorstore.md
 ├── exercises/                ← 练习代码
 │   ├── day01-fastapi/       FastAPI 路由 + 异步 + Pydantic
 │   ├── day02-langchain/     LangChain LCEL 管道语法
+│   ├── day03-rag-loading/   RAG 文档加载 + 文本分割
+│   ├── day04-rag-vectorstore/ Embedding + 向量检索
 │   └── ...
 └── projects/                 ← 完整项目（可写进简历）
 ```
@@ -24,7 +28,7 @@ agent-lab/
 |---|------|------|
 | 01 | FastAPI 基础 | ✅ |
 | 02 | LangChain LCEL | ✅ |
-| 03 | RAG 加载与分割 | ⬜ |
-| 04 | RAG 向量化与存储 | ⬜ |
+| 03 | RAG 加载与分割 | ✅ |
+| 04 | RAG 向量化与存储 | ✅ |
 | 05-06 | 手撕 Naive RAG | ⬜ |
 | 07 | 周度总结 + Docker | ⬜ |

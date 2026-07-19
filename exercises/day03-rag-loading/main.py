@@ -5,17 +5,19 @@ Day 3: RAG Part 1 — 文档加载与文本分割
 这是 RAG 系统的第一步——把原始文档变成可检索的文本块
 """
 
-import os
+from pathlib import Path
 
 # ============================================================
 # Part 1: 文档加载（Document Loaders）
 # ============================================================
 
-from langchain_community.document_loaders import TextLoader, DirectoryLoader
-from langchain_core.documents import Document
+from langchain_community.document_loaders import TextLoader
+
+BASE_DIR = Path(__file__).resolve().parent
+SAMPLE_PATH = BASE_DIR / "data" / "sample.md"
 
 # 1.1 加载单个文本文件
-loader = TextLoader("data/sample.md")
+loader = TextLoader(str(SAMPLE_PATH), encoding="utf-8")
 docs = loader.load()
 print(f"[加载] 共 {len(docs)} 个文档")
 print(f"[加载] 第一个文档开头: {docs[0].page_content[:100]}...")
@@ -35,7 +37,6 @@ print(f"[加载] 元数据: {docs[0].metadata}\n")
 from langchain_text_splitters import (
     RecursiveCharacterTextSplitter,
     MarkdownHeaderTextSplitter,
-    CharacterTextSplitter,
 )
 
 # 2.1 最常用的分割器：RecursiveCharacterTextSplitter
@@ -50,7 +51,7 @@ splitter = RecursiveCharacterTextSplitter(
 chunks = splitter.split_documents(docs)
 print(f"[递归分割] 共 {len(chunks)} 个文本块")
 for i, chunk in enumerate(chunks[:5]):
-    print(f"  [{i}] {len(chunk.page_content)} 字符 | {chunk.page_content[:80]}...")
+    print(f"  [{i}] {len(chunk.page_content)} 字符 | {chunk.page_content[:]}...")
 
 # 2.2 Markdown 按标题分割（保留文档结构）
 headers_to_split_on = [
@@ -64,15 +65,15 @@ md_splitter = MarkdownHeaderTextSplitter(
     strip_headers=False,
 )
 
-# 从原始文件读入 Markdown 文本
-with open("data/sample.md") as f:
-    md_text = f.read()
+# 先按标题保留文档结构；再按长度细分超长章节
+md_text = SAMPLE_PATH.read_text(encoding="utf-8")
 
-md_chunks = md_splitter.split_text(md_text)
-print(f"\n[Markdown 标题分割] 共 {len(md_chunks)} 个块")
+md_sections = md_splitter.split_text(md_text)
+md_chunks = splitter.split_documents(md_sections)
+print(f"\n[Markdown 标题 + 递归分割] 共 {len(md_chunks)} 个块")
 for chunk in md_chunks[:5]:
     title = chunk.metadata.get("H1") or chunk.metadata.get("H2") or ""
-    print(f"  [{title}] {chunk.page_content[:60]}...")
+    print(f"  [{title}] {chunk.page_content[:]}...")
 
 
 # ============================================================
