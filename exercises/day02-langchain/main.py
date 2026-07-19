@@ -14,6 +14,8 @@ LCEL = LangChain Expression Language，核心是管道操作符 `|`
 """
 
 import os
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning, module="pydantic")
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())  # 向上查找 .env  # 自动读取 .env 文件
 from langchain_core.prompts import ChatPromptTemplate, PromptTemplate
