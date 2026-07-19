@@ -97,7 +97,7 @@ outline_prompt = ChatPromptTemplate.from_messages([
 ])
 
 write_prompt = ChatPromptTemplate.from_messages([
-    ("system", "根据以下大纲，写一段 200 字以内的内容。"),
+    ("system", "根据以下大纲，围绕「{topic}」写一段 200 字以内的内容。"),
     ("human", "大纲：\n{outline}\n\n请展开描述。"),
 ])
 

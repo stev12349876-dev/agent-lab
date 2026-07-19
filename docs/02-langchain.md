@@ -121,6 +121,20 @@ chain = prompt | llm | JsonOutputParser(pydantic_object=MyModel)
 
 这和 Day 1 的 `asyncio.gather` 一个思路——Agent 需要并行调多个工具，LCEL 天然支持。
 
+### 重要细节：RunnableParallel 的 key 必须被下游消费
+
+```python
+# ❌ 错误：topic 传了但 write_prompt 不用它
+{"outline": outline_chain, "topic": lambda x: x}
+| write_prompt  # write_prompt 里没有 {topic} → topic 被静默丢弃
+
+# ✅ 正确：write_prompt 的占位符和字典的 key 一一对应
+{"outline": outline_chain, "topic": lambda x: x}
+| write_prompt  # write_prompt 里同时有 {outline} 和 {topic}
+```
+
+LangChain 不会因为多余 key 报错，这很危险——你以为传了数据，实际上没用上。
+
 ## 五、和 Agent 开发的关系
 
 你在 Day 2 学的这些，到 Week 3 会变成 Agent 的核心组件：
