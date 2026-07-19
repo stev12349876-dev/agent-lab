@@ -8,25 +8,24 @@
 
 ```
 agent-lab/
-├── exercises/       ← 学习阶段的练习代码
-│   ├── 01-fastapi/          FastAPI 路由 + 异步 + Pydantic
-│   ├── 02-advanced-rag/     Advanced RAG + 向量数据库
-│   ├── 03-agent-toolcalling/ Agent + ReAct + Tool Calling
-│   ├── 04-production/       生产化部署
-│   ├── 05-observability/    可观测性
-│   ├── 06-multi-agent/      Multi-Agent 系统
-│   └── 07-final-project/    综合实战
-└── projects/        ← 完整项目（可写进简历）
+├── docs/                     ← 学习笔记（统一管理）
+│   ├── 01-fastapi.md
+│   └── 02-langchain.md
+├── exercises/                ← 练习代码
+│   └── 01-fastapi/
+│       ├── day01-fastapi/    FastAPI 路由 + 异步 + Pydantic
+│       ├── day02-langchain/  LangChain LCEL 管道语法
+│       └── ...
+└── projects/                 ← 完整项目（可写进简历）
 ```
 
 ## 进度
 
 | # | 主题 | 状态 |
 |---|------|------|
-| 01 | FastAPI 基础 | ✅ 完成 |
-| 02 | Advanced RAG | ⬜ |
-| 03 | Agent + Tool Calling | ⬜ |
-| 04 | 生产化部署 | ⬜ |
-| 05 | 可观测性 | ⬜ |
-| 06 | Multi-Agent | ⬜ |
-| 07 | 综合实战 | ⬜ |
+| 01 | FastAPI 基础 | ✅ |
+| 02 | LangChain LCEL | ✅ |
+| 03 | RAG 加载与分割 | ⬜ |
+| 04 | RAG 向量化与存储 | ⬜ |
+| 05-06 | 手撕 Naive RAG | ⬜ |
+| 07 | 周度总结 + Docker | ⬜ |
