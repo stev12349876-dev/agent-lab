@@ -12,10 +12,9 @@ agent-lab/
 │   ├── 01-fastapi.md
 │   └── 02-langchain.md
 ├── exercises/                ← 练习代码
-│   └── 01-fastapi/
-│       ├── day01-fastapi/    FastAPI 路由 + 异步 + Pydantic
-│       ├── day02-langchain/  LangChain LCEL 管道语法
-│       └── ...
+│   ├── day01-fastapi/       FastAPI 路由 + 异步 + Pydantic
+│   ├── day02-langchain/     LangChain LCEL 管道语法
+│   └── ...
 └── projects/                 ← 完整项目（可写进简历）
 ```
 
